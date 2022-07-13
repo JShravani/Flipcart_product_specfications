@@ -1,0 +1,29 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+driver = webdriver.Chrome(executable_path="C:\\release105.0.0\\lcg_uat\\venv\\Scripts\\chromedriver.exe")
+driver.get('https://www.flipkart.com/')
+driver.set_window_size(width=1920, height=1080)
+
+close_login_popup = driver.find_element(By.XPATH, '//button[@class="_2KpZ6l _2doB4z"]')
+close_login_popup.click()
+search_box = driver.find_element(By.XPATH, '//input[@type="text"]')
+search_item = 'Iphone'
+search_box.send_keys(search_item)
+search_button = driver.find_element(By.XPATH, '//button[@type="submit"]')
+search_button.click()
+mobile_details_xpath = '//div[@class="_4rR01T"]'
+element = WebDriverWait(driver, timeout=10).until(EC.presence_of_element_located((By.XPATH, mobile_details_xpath)),
+                                                  message=f'Unable to find web element xpath "{mobile_details_xpath}"')
+
+list_of_elements = driver.find_elements_by_xpath(mobile_details_xpath)
+first_item_details = list_of_elements[0].text.split('(')
+item_name = first_item_details[0]
+specifications = first_item_details[1].strip(')')
+
+item_details = {}
+item = {'name': item_name, 'specifications': specifications}
+item_details[search_item] = item
+print(item_details)
